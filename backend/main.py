@@ -25,7 +25,7 @@ app.include_router(paypal.router, prefix="/paypal", tags=["PayPal"])
 app.include_router(fraud.router,  prefix="/fraud",   tags=["Fraud"])
 
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 def health():
     return {"status": "ok", "service": "ZeroTrace"}
 
