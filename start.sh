@@ -14,7 +14,7 @@ npx hardhat run scripts/deploy_contract.js --network localhost
 
 echo "Starting FastAPI backend..."
 cd ../backend
-pip install -r requirements.txt
+pip install -r requirements.txt --break-system-packages
 uvicorn main:app --host 0.0.0.0 --port $PORT &
 
 echo "All services running!"
