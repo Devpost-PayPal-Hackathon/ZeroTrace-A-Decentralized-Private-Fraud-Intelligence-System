@@ -1,8 +1,9 @@
+# yaml-language-server: $schema=off
 services:
   - type: web
     name: zerotrace
     runtime: node
-    buildCommand: cd contracts && npm install
+    buildCommand: cd contracts && npm install && pip install -r ../backend/requirements.txt --break-system-packages
     startCommand: bash start.sh
     envVars:
       - key: HARDHAT_MNEMONIC
