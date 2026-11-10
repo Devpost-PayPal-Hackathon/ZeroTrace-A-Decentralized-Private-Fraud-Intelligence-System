@@ -14,6 +14,6 @@ npx hardhat run scripts/deploy_contract.js --network localhost
 
 echo "Starting FastAPI backend..."
 cd ../backend
-/opt/render/.local/bin/uvicorn main:app --host 0.0.0.0 --port $PORT
+python3 -m uvicorn main:app --host 0.0.0.0 --port $PORT
 
 wait $NODE_PID
