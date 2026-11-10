@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 
-const API = "http://localhost:8000";
+const API = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const TYPE_MAP = { CASH_IN: 0, CASH_OUT: 1, DEBIT: 2, PAYMENT: 3, TRANSFER: 4 };
 

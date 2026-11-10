@@ -42,7 +42,7 @@ function VerdictCell({ value }) {
         : <span style={{ color: "#34d399", fontSize: 11, fontWeight: 600 }}>legit</span>;
 }
 
-const API = "http://localhost:8000";
+const API = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 const fmtDollars = (p) => {
     const v = parseFloat(p.value);
