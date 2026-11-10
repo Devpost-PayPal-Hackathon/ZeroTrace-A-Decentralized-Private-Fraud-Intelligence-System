@@ -3,7 +3,7 @@ set -e
 
 echo "Starting Hardhat node..."
 cd contracts
-npx hardhat node --hostname 0.0.0.0 &
+npx hardhat node --hostname 127.0.0.1 &
 NODE_PID=$!
 
 echo "Waiting for node to be ready..."
@@ -15,7 +15,7 @@ npx hardhat run scripts/deploy_contract.js --network localhost
 echo "Starting FastAPI backend..."
 cd ../backend
 pip install -r requirements.txt --break-system-packages
-uvicorn main:app --host 0.0.0.0 --port $PORT &
+uvicorn main:app --host 0.0.0.0 --port $PORT
 
 echo "All services running!"
 wait $NODE_PID
