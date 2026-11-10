@@ -1,26 +1,5 @@
 import { defineConfig } from "hardhat/config";
 import hardhatEthers from "@nomicfoundation/hardhat-ethers";
-import type { NetworkUserConfig } from "hardhat/types/config";
-import { config as dotenvConfig } from "dotenv";
-import { resolve, dirname } from "path";
-import { fileURLToPath } from "url";
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
-dotenvConfig({ path: resolve(__dirname, ".env") });
-
-const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "";
-const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
-
-const httpNetworks: Record<string, NetworkUserConfig> = SEPOLIA_RPC_URL
-    ? {
-        sepolia: {
-            type: "http" as const,
-            url: SEPOLIA_RPC_URL,
-            accounts: PRIVATE_KEY ? [PRIVATE_KEY] : [],
-            chainId: 11155111,
-        },
-    }
-    : {};
 
 export default defineConfig({
     plugins: [hardhatEthers],
@@ -36,6 +15,16 @@ export default defineConfig({
         hardhat: {
             type: "edr-simulated" as const,
             chainType: "l1",
+            accounts: {
+                mnemonic: process.env.HARDHAT_MNEMONIC ??
+                    "test test test test test test test test test test test junk",
+                count: 20,
+            },
+        },
+        localhost: {
+            type: "http" as const,
+            chainId: 31337,
+            url: process.env.RPC_URL ?? "http://127.0.0.1:8545",
         },
     },
 

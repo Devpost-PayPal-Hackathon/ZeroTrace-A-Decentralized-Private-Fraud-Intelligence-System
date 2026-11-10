@@ -5,6 +5,15 @@ import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+const DEPLOYMENT_FILE = process.env.DEPLOYMENT_PATH ??
+    path.join(__dirname, "..", "deployment.json");
+
+async function isDeployed(ethers, address) {
+    if (!address) return false;
+    const code = await ethers.provider.getCode(address);
+    return code !== "0x";
+}
+
 async function main() {
     const { ethers } = await network.connect();
     const [deployer] = await ethers.getSigners();
@@ -19,31 +28,40 @@ async function main() {
     console.log(`  Balance  : ${ethers.formatEther(balance)} ETH`);
     console.log("───────────────────────────────────────────────────\n");
 
-    // 1. Deploy Verifier
-    console.log("1/2  Deploying Verifier.sol...");
-    const VerifierFactory = await ethers.getContractFactory("Verifier");
-    const verifier = await VerifierFactory.deploy();
-    await verifier.waitForDeployment();
-    const verifierAddress = await verifier.getAddress();
-    console.log(`     ✅ Verifier deployed: ${verifierAddress}\n`);
+    // Load existing deployment if present
+    let existing = {};
+    if (fs.existsSync(DEPLOYMENT_FILE)) {
+        existing = JSON.parse(fs.readFileSync(DEPLOYMENT_FILE, "utf8"));
+        console.log("  Found existing deployment.json — checking contracts...\n");
+    }
 
-    // 2. Deploy FraudRegistry
-    console.log("2/2  Deploying FraudRegistry.sol...");
-    const RegistryFactory = await ethers.getContractFactory("FraudRegistry");
-    const registry = await RegistryFactory.deploy(verifierAddress);
-    await registry.waitForDeployment();
-    const registryAddress = await registry.getAddress();
-    console.log(`     ✅ FraudRegistry deployed: ${registryAddress}\n`);
+    // 1. Deploy Verifier (skip if already deployed)
+    let verifierAddress = existing.verifierAddress;
+    if (await isDeployed(ethers, verifierAddress)) {
+        console.log(`1/2  Skipping Verifier (already at ${verifierAddress})`);
+    } else {
+        console.log("1/2  Deploying Verifier.sol...");
+        const VerifierFactory = await ethers.getContractFactory("Verifier");
+        const verifier = await VerifierFactory.deploy();
+        await verifier.waitForDeployment();
+        verifierAddress = await verifier.getAddress();
+        console.log(`     ✅ Verifier deployed: ${verifierAddress}\n`);
+    }
 
-    // 3. Verify deployment
-    console.log("Verifying deployment...");
-    const [submissions, verified] = await registry.getStats();
-    console.log(`     totalSubmissions : ${submissions}`);
-    console.log(`     totalVerified    : ${verified}`);
-    console.log(`     verifier address : ${await registry.verifier()}`);
-    console.log(`     owner            : ${await registry.owner()}\n`);
+    // 2. Deploy FraudRegistry (skip if already deployed)
+    let registryAddress = existing.registryAddress;
+    if (await isDeployed(ethers, registryAddress)) {
+        console.log(`2/2  Skipping FraudRegistry (already at ${registryAddress})`);
+    } else {
+        console.log("2/2  Deploying FraudRegistry.sol...");
+        const RegistryFactory = await ethers.getContractFactory("FraudRegistry");
+        const registry = await RegistryFactory.deploy(verifierAddress);
+        await registry.waitForDeployment();
+        registryAddress = await registry.getAddress();
+        console.log(`     ✅ FraudRegistry deployed: ${registryAddress}\n`);
+    }
 
-    // 4. Save addresses to deployment.json
+    // 3. Save deployment.json
     const deploymentInfo = {
         network: network.name,
         deployedAt: new Date().toISOString(),
@@ -52,11 +70,10 @@ async function main() {
         registryAddress,
     };
 
-    const outPath = path.join(__dirname, "..", "deployment.json");
-    fs.writeFileSync(outPath, JSON.stringify(deploymentInfo, null, 2));
-    console.log(`📄  Saved to: ${outPath}`);
+    fs.mkdirSync(path.dirname(DEPLOYMENT_FILE), { recursive: true });
+    fs.writeFileSync(DEPLOYMENT_FILE, JSON.stringify(deploymentInfo, null, 2));
+    console.log(`\n📄  Saved to: ${DEPLOYMENT_FILE}`);
 
-    // 5. Print .env snippet
     console.log("\n───────────────────────────────────────────────────");
     console.log("  Add these to backend/.env:");
     console.log("───────────────────────────────────────────────────");

@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: zerotrace
+    runtime: node
+    buildCommand: cd contracts && npm install
+    startCommand: bash start.sh
+    envVars:
+      - key: HARDHAT_MNEMONIC
+        sync: false
+      - key: ETH_RPC_URL
+        value: http://127.0.0.1:8545
+      - key: REGISTRY_ADDRESS
+        sync: false
+      - key: VERIFIER_ADDRESS
+        sync: false
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: PAYPAL_MODE
+        value: sandbox
+      - key: PAYPAL_BASE_URL
+        value: https://api-m.sandbox.paypal.com
