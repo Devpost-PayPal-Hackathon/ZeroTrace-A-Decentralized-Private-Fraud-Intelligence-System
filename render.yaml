@@ -3,7 +3,8 @@ services:
   - type: web
     name: zerotrace
     runtime: node
-    buildCommand: cd contracts && npm install && pip install -r ../backend/requirements.txt --break-system-packages
+    port: 10000
+    buildCommand: cd contracts && npm install && python3 -m venv ../backend/venv && ../backend/venv/bin/pip install -r ../backend/requirements.txt
     startCommand: bash start.sh
     envVars:
       - key: HARDHAT_MNEMONIC
