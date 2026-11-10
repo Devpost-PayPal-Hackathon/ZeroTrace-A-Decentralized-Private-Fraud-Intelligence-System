@@ -54,7 +54,6 @@ python-dateutil==3.0.0
 python-dotenv==1.2.4
 pytz==2026.6
 pyunormalize==18.0.0
-pywin32==312
 regex==2026.9.29
 requests==2.34.2
 rlp==5.0.0
