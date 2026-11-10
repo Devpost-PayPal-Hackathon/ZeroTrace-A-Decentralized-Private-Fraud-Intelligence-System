@@ -1,0 +1,34 @@
+# Environment
+.env
+**/.env
+
+# Python
+__pycache__/
+*.pyc
+venv/
+
+# Database
+*.db
+*.sqlite
+
+# Node
+node_modules/
+
+# Hardhat generated
+contracts/artifacts/
+contracts/cache/
+
+# Large/generated ZK files
+backend/zk/circom2.exe
+backend/zk/pot12_0000.ptau
+backend/zk/pot12_0001.ptau
+backend/zk/fraud_threshold_0000.zkey
+backend/zk/fraud_threshold_0001.zkey
+backend/zk/proof.json
+backend/zk/public.json
+backend/zk/witness.wtns
+backend/zk/temp/
+
+# OS
+.DS_Store
+Thumbs.db
