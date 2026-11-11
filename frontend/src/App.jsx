@@ -27,6 +27,7 @@ export default function App() {
   const [lastUpdated, setLastUpdated] = useState(null);
   const [paypalResult, setPaypalResult] = useState(null);
   const [paypalError, setPaypalError] = useState(null);
+  const [paypalKey, setPaypalKey] = useState(0);
   const [isSuspicious, setIsSuspicious] = useState(false);
   const [sandboxCap, setSandboxCap] = useState(false);
   const [capError, setCapError] = useState(false);
@@ -424,6 +425,7 @@ export default function App() {
                       {/* PayPal button */}
                       <div style={{ maxWidth: 400, margin: "0 auto" }}>
                         <PayPalButtons
+                          key={paypalKey}
                           style={{ layout: "vertical", color: "blue", shape: "rect", label: "pay" }}
                           createOrder={() =>
                             fetch(`${API}/paypal/create-order`, {
@@ -477,7 +479,7 @@ export default function App() {
                         </div>
                       </div>
                       <button
-                        onClick={() => { setPaypalResult(null); setPaypalError(null); }}
+                        onClick={() => { setPaypalResult(null); setPaypalError(null); setPaypalKey(k => k + 1); }}
                         style={{ width: "100%", padding: "10px", background: "#1a1a3a", border: "1px solid #333", color: "#a5b4fc", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 600 }}
                       >
                         Pay Again
