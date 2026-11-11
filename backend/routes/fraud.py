@@ -80,12 +80,12 @@ def generate_zk_proof(fraud_score: float, threshold: float = 0.75):
                 check=True, capture_output=True
             )
             subprocess.run(
-                ['snarkjs', 'groth16', 'prove', ZKEY_PATH, witness_path, proof_path, public_path],
+                f'snarkjs groth16 prove "{ZKEY_PATH}" "{witness_path}" "{proof_path}" "{public_path}"',
                 check=True, capture_output=True, shell=True
             )
 
             result = subprocess.run(
-                ['snarkjs', 'groth16', 'verify', VKEY_PATH, public_path, proof_path],
+                f'snarkjs groth16 verify "{VKEY_PATH}" "{public_path}" "{proof_path}"',
                 capture_output=True, text=True, shell=True
             )
 

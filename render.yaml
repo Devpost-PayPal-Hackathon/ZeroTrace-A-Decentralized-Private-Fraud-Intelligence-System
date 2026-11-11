@@ -4,7 +4,7 @@ services:
     name: zerotrace
     runtime: node
     port: 10000
-    buildCommand: cd contracts && npm install && python3.11 -m venv ../backend/venv && ../backend/venv/bin/pip install -r ../backend/requirements.txt
+    buildCommand: cd contracts && npm install && npm install -g snarkjs && python3.11 -m venv ../backend/venv && ../backend/venv/bin/pip install -r ../backend/requirements.txt
     startCommand: bash start.sh
     envVars:
       - key: PORT
