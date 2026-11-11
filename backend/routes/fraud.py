@@ -25,6 +25,7 @@ ZKEY_PATH   = os.path.join(ZK_DIR, 'fraud_threshold_final.zkey')
 WASM_PATH   = os.path.join(ZK_DIR, 'fraud_threshold_js', 'fraud_threshold.wasm')
 WITNESS_GEN = os.path.join(ZK_DIR, 'fraud_threshold_js', 'generate_witness.js')
 VKEY_PATH   = os.path.join(ZK_DIR, 'verification_key.json')
+SNARKJS_BIN = os.path.join(os.path.dirname(__file__), '..', 'snarkjs_local', 'node_modules', '.bin', 'snarkjs')
 
 # ── Load model once at startup ────────────────────────────────────────────────
 ML_DIR     = os.path.join(os.path.dirname(__file__), '..', 'ml')
@@ -80,12 +81,12 @@ def generate_zk_proof(fraud_score: float, threshold: float = 0.75):
                 check=True, capture_output=True
             )
             subprocess.run(
-                f'snarkjs groth16 prove "{ZKEY_PATH}" "{witness_path}" "{proof_path}" "{public_path}"',
+                f'"{SNARKJS_BIN}" groth16 prove "{ZKEY_PATH}" "{witness_path}" "{proof_path}" "{public_path}"',
                 check=True, capture_output=True, shell=True
             )
 
             result = subprocess.run(
-                f'snarkjs groth16 verify "{VKEY_PATH}" "{public_path}" "{proof_path}"',
+                f'"{SNARKJS_BIN}" groth16 verify "{VKEY_PATH}" "{public_path}" "{proof_path}"',
                 capture_output=True, text=True, shell=True
             )
 
